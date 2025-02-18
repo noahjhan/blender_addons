@@ -12,7 +12,7 @@ class DisjointSet:
         return root
 
     def setunion(self, a, b):
-        if a == b or a >= self.elems_.size or b >= self.elems_.size
+        if a == b or a >= self.elems_.size or b >= self.elems_.size:
             return None
         
         left = self.find(a)
@@ -30,13 +30,13 @@ class DisjointSet:
             size = self.size(a)
 
             self.elems_[left] = right
-            self.elems[right] -= size
+            self.elems_[right] -= size
     
     def size(self, elem):
         return -1 * self.elems_[self.find(elem)]
     
     def getValue(self, elem):
-        return self.elems[elem]
+        return self.elems_[elem]
         
 
 #convert to union by size uptree
