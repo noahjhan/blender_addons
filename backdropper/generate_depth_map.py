@@ -7,12 +7,13 @@ def listify(path):
         width, height = img.size
         img = img.convert("RGB")
         arr_3D = np.array(img)
+
         pixels = arr_3D.reshape(-1, arr_3D.shape[2])
 
         ordered_arr = width * height
         dataset = disjoint_set.DisjointSet(ordered_arr)
 
-        final = contrast_merge(pixels, dataset, width, height, 4)
+        final = contrast_merge(pixels, dataset, width, height, 1)
         return Image.fromarray(final.reshape(height, width, -1), mode="RGB")
 
     
@@ -20,10 +21,9 @@ def contrast_merge(img, dataset, width, height, num_passes):
     for iters in range(num_passes):
         print(f"Pass {iters}")
         for elem in range(width * height):
-            x = elem % width  # Get the x-coordinate (column)
-            y = elem // width  # Get the y-coordinate (row)
+            x = elem % width  # column
+            y = elem // width  # row
 
-            # Skip the first and last rows, and the first and last columns
             if x == 0 or x == width - 1 or y == 0 or y == height - 1:
                 continue
             
@@ -41,9 +41,9 @@ def contrast_merge(img, dataset, width, height, num_passes):
             ]
 
             min_contrast = min(contrasts, key=lambda x: x[0])
-            # dataset.setunion(elem, min_contrast[1])
 
-            img[elem] = img[min_contrast[1]]
+            if (min_contrast[0] < 255): # make a tolerance
+                dataset.setunion(elem, min_contrast[1])
 
 
     for elem in range(width * height):

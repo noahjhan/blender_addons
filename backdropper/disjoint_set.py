@@ -2,12 +2,12 @@ import numpy as np
 
 class DisjointSet:
     def __init__(self, elems):
-        self.elems_ = np.full(elems, -1)  # Initialize each element as its own set
+        self.elems_ = np.full(elems, -1)
     
     def find(self, elem):
         if self.elems_[elem] < 0:
             return elem
-        root = self.find(self.elems_[elem])  # Path compression
+        root = self.find(self.elems_[elem])
         self.elems_[elem] = root
         return root
 
@@ -22,11 +22,11 @@ class DisjointSet:
             return None
         
         if self.size(left) >= self.size(right):
+            self.elems_[left] += self.elems_[right]
             self.elems_[right] = left
-            self.elems_[left] -= self.size(right)
         else:
+            self.elems_[right] += self.elems_[left]
             self.elems_[left] = right
-            self.elems_[right] -= self.size(left)
     
     def size(self, elem):
         return -self.elems_[self.find(elem)]
