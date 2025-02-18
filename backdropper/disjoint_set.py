@@ -1,3 +1,5 @@
+import numpy as np
+
 class DisjointSet:
     def __init__(self, vertices, parent):
         self.vertices = vertices
@@ -15,3 +17,4 @@ class DisjointSet:
         self.parent[root1] = root2
 
 #convert to union by size uptree
+
