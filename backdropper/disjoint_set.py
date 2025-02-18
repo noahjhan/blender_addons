@@ -2,17 +2,17 @@ import numpy as np
 
 class DisjointSet:
     def __init__(self, elems):
-        self.elems_ = elems
-
+        self.elems_ = np.full(elems, -1)  # Initialize each element as its own set
+    
     def find(self, elem):
         if self.elems_[elem] < 0:
             return elem
-        root = self.find(self.elems_.at(elem))
+        root = self.find(self.elems_[elem])  # Path compression
         self.elems_[elem] = root
         return root
 
     def setunion(self, a, b):
-        if a == b or a >= self.elems_.size or b >= self.elems_.size:
+        if a == b or a >= len(self.elems_) or b >= len(self.elems_):
             return None
         
         left = self.find(a)
@@ -21,23 +21,15 @@ class DisjointSet:
         if left == right:
             return None
         
-        if self.size(a) >= self.size(b):
-            size = self.size(b)
-
+        if self.size(left) >= self.size(right):
             self.elems_[right] = left
-            self.elems_[left] -= size
+            self.elems_[left] -= self.size(right)
         else:
-            size = self.size(a)
-
             self.elems_[left] = right
-            self.elems_[right] -= size
+            self.elems_[right] -= self.size(left)
     
     def size(self, elem):
-        return -1 * self.elems_[self.find(elem)]
+        return -self.elems_[self.find(elem)]
     
     def getValue(self, elem):
         return self.elems_[elem]
-        
-
-#convert to union by size uptree
-
