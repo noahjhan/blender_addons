@@ -27,6 +27,7 @@ def listify(path):
         return final
     
 def contrast_merge(num_sets):
+    
     # for each non-edge pixel
     #   merge with pixel most similar
 
@@ -37,7 +38,7 @@ def contrast_merge(num_sets):
 def calculate_contrast(pixel, neighbor):
     sum = 0
     for i in range(3):
-        sum += np.abs(pixel[i] - neighbor[i]);
+        sum += np.abs(pixel[i] - neighbor[i])
     return sum
 
 
