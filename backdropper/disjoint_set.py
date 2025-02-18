@@ -1,20 +1,43 @@
 import numpy as np
 
 class DisjointSet:
-    def __init__(self, vertices, parent):
-        self.vertices = vertices
-        self.parent = parent
+    def __init__(self, elems):
+        self.elems_ = elems
 
-    def find(self, item):
-        if self.parent[item] == item:
-            return item
+    def find(self, elem):
+        if self.elems_[elem] < 0:
+            return elem
+        root = self.find(self.elems_.at(elem))
+        self.elems_[elem] = root
+        return root
+
+    def setunion(self, a, b):
+        if a == b or a >= self.elems_.size or b >= self.elems_.size
+            return None
+        
+        left = self.find(a)
+        right = self.find(b)
+
+        if left == right:
+            return None
+        
+        if self.size(a) >= self.size(b):
+            size = self.size(b)
+
+            self.elems_[right] = left
+            self.elems_[left] -= size
         else:
-            return self.find(self.parent[item])
+            size = self.size(a)
 
-    def union(self, set1, set2):
-        root1 = self.find(set1)
-        root2 = self.find(set2)
-        self.parent[root1] = root2
+            self.elems_[left] = right
+            self.elems[right] -= size
+    
+    def size(self, elem):
+        return -1 * self.elems_[self.find(elem)]
+    
+    def getValue(self, elem):
+        return self.elems[elem]
+        
 
 #convert to union by size uptree
 

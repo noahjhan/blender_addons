@@ -26,8 +26,10 @@ def listify(path):
         dataset = disjoint_set.DisjointSet(pixels, parent)
         return final
     
-def contrast_merge(num_sets):
-    
+def contrast_merge(num_sets, dataset):
+    return None
+    for coord in 
+    # coord = col + (row * width)
     # for each non-edge pixel
     #   merge with pixel most similar
 
