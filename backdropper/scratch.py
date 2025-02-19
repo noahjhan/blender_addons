@@ -1,4 +1,8 @@
-print("gere")
+from PIL import Image, ImageFilter
+image = Image.open(r"/Users/noahhan/github_projects/blender_addons/backdropper/images/poke.jpeg")
 
-for i in 2:
-    print(i)
+image = image.convert("L")
+
+image = image.filter(ImageFilter.FIND_EDGES)
+
+image.save(r"Edge_Sample.png")
