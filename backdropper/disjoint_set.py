@@ -33,3 +33,10 @@ class DisjointSet:
     
     def getValue(self, elem):
         return self.elems_[elem]
+    
+    def numSets(self):
+        sum = 0
+        for elem in self.elems_:
+            if elem < 0:
+                sum += 1
+        return sum

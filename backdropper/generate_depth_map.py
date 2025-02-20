@@ -2,7 +2,6 @@ from PIL import Image, ImageFilter
 import numpy as np
 import disjoint_set
 
-
 # proprocessing
 # edge detection
 # color reduction
@@ -15,65 +14,83 @@ def listify(path):
         arr_3D = np.array(img)
         pixels = arr_3D.reshape(-1, arr_3D.shape[2])
 
-        ordered_arr = width * height
-        dataset = disjoint_set.DisjointSet(ordered_arr)
+        dataset = disjoint_set.DisjointSet(width * height)
 
-        final = contrast_merge(pixels, dataset, width, height, 1)
+        # final = contrast_merge(pixels, width, height, 2)
+        final = to_psuedo_voronoi(pixels, width, height, dataset)
         return Image.fromarray(final.reshape(height, width, -1), mode="RGB")
 
-    
-def contrast_merge(img, dataset, width, height, num_passes, contrast_threshold=30):
-    for iters in range(num_passes):
-        print(f"Pass {iters}")
-        changes = 0  # Track changes to enable early stopping
-        
-        for elem in range(width * height):
-            x = elem % width  # column
-            y = elem // width  # row
+# img     ->  as 2D array [index][R, G, B]
+# width   ->  image width
+# height  ->  image height
+# dataset ->  disjoint set of coordinates
+# (index = x + (y * x))
+# (size = width * height)
+def to_psuedo_voronoi(img, width, height, dataset):
+    # generate array of edge coordinates
+    # i.e. pixel at coordinate is edge if recently unioned
+    num_passes = 1
+    prev_num_sets = 0
 
-            # Ensure the pixel is not on the border
+    # is_edge = np.full((width * height), True)
+    while dataset.numSets() > 5000: 
+        if prev_num_sets == dataset.numSets():
+            print("No changes made, exiting early...")
+            break
+        
+        prev_num_sets = dataset.numSets()
+
+        print(f"Iteration: {num_passes}")
+        print(f"Number of Sets: {dataset.numSets()}")
+        num_passes += 1
+
+        for elem in range(width*height):
+            # if not is_edge[elem]:
+            #     continue
+                
+            x = elem % width  
+            y = elem // width
+
             if x == 0 or x == width - 1 or y == 0 or y == height - 1:
                 continue
-            
+
             pixel = img[elem]
-            
-            neighbors = [
-                (elem - width, img[elem - width]),  # Up
-                (elem + width, img[elem + width]),  # Down
-                (elem - 1, img[elem - 1]),         # Left
-                (elem + 1, img[elem + 1]),         # Right
+
+            adjacent = [
+                (elem - width, img[elem - width]),           # Up
+                (elem + width, img[elem + width]),           # Down
+                (elem - 1, img[elem - 1]),                   # Left
+                (elem + 1, img[elem + 1]),                   # Right
                 (elem - width - 1, img[elem - width - 1]),  # Up-Left
-                (elem - width + 1, img[elem - width + 1]),  # Up-Right
-                (elem + width - 1, img[elem + width - 1]),  # Down-Left
-                (elem + width + 1, img[elem + width + 1])   # Down-Right
+                (elem - width + 1, img[elem - width + 1]),   # Up-Right
+                (elem + width - 1, img[elem + width - 1]),   # Down-Left
+                (elem + width + 1, img[elem + width + 1])    # Down-Right
             ]
-            
-            min_contrast = 180
-            min_neighbor_idx = None
 
-            for neighbor_idx, neighbor_pixel in neighbors:
-                contrast = calculate_hue_contrast(pixel, neighbor_pixel)
-                if contrast < min_contrast:
+            min_idx = elem
+            min_contrast = 255 * 3
+
+            for neighbor in adjacent:
+                contrast = calculate_contrast(pixel, neighbor[1])
+                hue_contrast = calculate_hue_contrast(pixel, neighbor[1])
+
+                if contrast > 10:
+                    continue
+
+                if hue_contrast > 15:
+                    continue
+
+                if contrast < min_contrast and dataset.find(elem) != dataset.find(neighbor[0]):
                     min_contrast = contrast
-                    min_neighbor_idx = neighbor_idx
-                    changes += 1
+                    min_idx = neighbor[0]
+            
+            dataset.setunion(elem, min_idx) # combine with lowest contrast neighbor
+            # is_edge[elem] = False
 
-            if min_contrast < 180:
-                dataset.setunion(elem, min_neighbor_idx)
-
-        # Early stopping if no changes occur
-        if changes == 0:
-            print("No changes in this pass, stopping early.")
-            break
+    for elem in range(width*height):
+        img[elem] = img[dataset.find(elem)]
     
-    # Final pass: Assign pixels to their root representative
-    for elem in range(width * height):
-        root = dataset.find(elem)
-        img[elem] = img[root]
-
     return img
-
-
 
 def calculate_contrast(pixel, neighbor):
     return np.sum(np.abs(pixel - neighbor))
