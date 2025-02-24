@@ -17,7 +17,7 @@ def listify(path):
         dataset = disjoint_set.DisjointSet(width * height)
 
         # final = contrast_merge(pixels, width, height, 2)
-        final = to_psuedo_voronoi(pixels, width, height, dataset)
+        final = toPseudoVoronoi(pixels, width, height, dataset)
         return Image.fromarray(final.reshape(height, width, -1), mode="RGB")
 
 # img     ->  as 2D array [index][R, G, B]
@@ -26,7 +26,7 @@ def listify(path):
 # dataset ->  disjoint set of coordinates
 # (index = x + (y * x))
 # (size = width * height)
-def to_psuedo_voronoi(img, width, height, dataset):
+def toPseudoVoronoi(img, width, height, dataset):
     # generate array of edge coordinates
     # i.e. pixel at coordinate is edge if recently unioned
     num_passes = 1
