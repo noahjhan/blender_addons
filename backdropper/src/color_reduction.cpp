@@ -64,8 +64,8 @@ int main() {
   const char *output_filename = "/users/noahhan/github_projects/blender_addons/backdropper/images/"
                                 "poke_output.png";
 
-  const char *normal_output_filename = "/Users/noahhan/github_projects/blender_addons/backdropper/images/"
-                                       "normal_output.png";
+  // const char *normal_output_filename = "/Users/noahhan/github_projects/blender_addons/backdropper/images/"
+  // "normal_output.png";
 
   int width = 0, height = 0;
   auto image_vector = load_png_to_vector(input_filename, width, height);
@@ -100,7 +100,7 @@ int main() {
               << image_vector[i][1] << ", " << image_vector[i][2] << std::endl;
   }
 
-  std::vector<std::vector<int>> normal_image = imageToNormal(image_vector);
+  // std::vector<std::vector<int>> normal_image = imageToNormal(image_vector);
 
   if (save_vector_to_png(output_filename, image_vector, width, height)) {
     std::cout << "image saved successfully to " << output_filename << std::endl;
@@ -109,11 +109,13 @@ int main() {
     return 1;
   }
 
-  if (save_vector_to_png(normal_output_filename, normal_image, width, height)) {
-    std::cout << "Image saved successfully to " << normal_output_filename << std::endl;
-  } else {
-    std::cerr << "Failed to save output image." << std::endl;
-    return 1;
-  }
+  // if (save_vector_to_png(normal_output_filename, normal_image, width, height)) {
+  //   std::cout << "Image saved successfully to " << normal_output_filename << std::endl;
+  // } else {
+  //   std::cerr << "Failed to save output image." << std::endl;
+  //   return 1;
+  // }
+
+  // poopen();
   return 0;
 }
