@@ -196,6 +196,7 @@ kMeans(int k, std::vector<std::vector<int>> &points, const unsigned &width,
 
     converged = true;
     for (int i = 0; i < k; ++i) {
+
       if (euclideanDist(centroids[i], new_centroids[i]) > epsilon) {
         converged = false;
         break;
