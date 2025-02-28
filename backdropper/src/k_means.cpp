@@ -7,8 +7,8 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
-#include <set>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #define DIMENSION (3) // RGB
@@ -57,7 +57,7 @@ selectClusterCenters(const int &k, const unsigned &width,
                      const std::vector<std::vector<int>> &points) {
   std::srand(std::time(nullptr));
   std::vector<std::vector<int>> centers;
-  std::set<int> unique_pixels;
+  std::unordered_set<int> unique_pixels;
 
   int first_center = std::rand() % (width * height);
   centers.push_back(points[first_center]);
