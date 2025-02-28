@@ -1,11 +1,4 @@
-#include <algorithm>
-#include <array>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
-#include <functional>
 #include <iostream>
-#include <limits>
 #include <numeric>
 #include <unordered_map>
 #include <unordered_set>
@@ -90,6 +83,40 @@ selectClusterCenters(const int &k, const unsigned &width,
   return centers;
 }
 
+std::vector<std::vector<int>>
+selectClusterCentersUniform(const int &k, const unsigned &width,
+                            const unsigned &height,
+                            const std::vector<std::vector<int>> &points) {
+
+  std::vector<std::vector<int>> centers;
+  centers.reserve(k);
+
+  int step_x = width / std::sqrt(k);
+  int step_y = height / std::sqrt(k);
+
+  if (step_x == 0)
+    step_x = 1;
+  if (step_y == 0)
+    step_y = 1;
+
+  for (int i = 0; i < std::sqrt(k); ++i) {
+    for (int j = 0; j < std::sqrt(k); ++j) {
+      if (centers.size() >= k)
+        break;
+
+      int x = i * step_x;
+      int y = j * step_y;
+      int index = y * width + x;
+
+      if (index < width * height) {
+        centers.push_back(points[index]);
+      }
+    }
+  }
+
+  return centers;
+}
+
 std::vector<int>
 calculateAverageRGB(const std::vector<int> &cluster_points,
                     const std::vector<std::vector<int>> &points) {
@@ -151,11 +178,11 @@ std::unordered_map<int, std::vector<int>>
 kMeans(int k, std::vector<std::vector<int>> &points, const unsigned &width,
        const unsigned &height) {
   std::vector<std::vector<int>> centroids =
-      selectClusterCenters(k, width, height, points);
+      selectClusterCentersUniform(k, width, height, points);
   std::unordered_map<int, std::vector<int>> clusters;
   bool converged = false;
   double epsilon = 1e-4;
-  // hi
+
   std::vector<double> weights = calculatePointWeights(points);
 
   while (!converged) {
