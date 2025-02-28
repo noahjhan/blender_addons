@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -std=c++17 -Wall -O2
 
-SRC = ./src/k_means.cpp
-OBJ = ./bin/k_means.o
+SRC = ./src/color_reduction.cpp
+OBJ = ./bin/color_reduction.o
 OUT = ./bin/exec
 
 all: $(OUT)
@@ -14,4 +14,4 @@ $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f bin/*.o bink_means/
+	rm -f bin/*.o bincolor_reduction/

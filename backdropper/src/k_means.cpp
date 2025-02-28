@@ -3,11 +3,12 @@
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
+#include <functional>
 #include <iostream>
 #include <limits>
-#include <map>
 #include <numeric>
 #include <set>
+#include <unordered_map>
 #include <vector>
 
 #define DIMENSION (3) // RGB
@@ -17,6 +18,37 @@ double euclideanDist(const std::vector<T> &left, const std::vector<T> &right) {
   return std::sqrt(std::inner_product(
       left.begin(), left.end(), right.begin(), 0.0, std::plus<>(),
       [](T a, T b) { return (a - b) * (a - b); }));
+}
+
+struct Hash {
+  std::size_t operator()(const std::vector<int> &v) const {
+    std::size_t hash = v.size();
+    for (int num : v) {
+      hash ^= std::hash<int>{}(num) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+    }
+    return hash;
+  }
+};
+
+std::vector<double>
+calculatePointWeights(const std::vector<std::vector<int>> &points) {
+  std::unordered_map<std::vector<int>, int, Hash> weight_map;
+  size_t n = points.size();
+
+  // Count occurrences
+  for (const auto &point : points) {
+    ++weight_map[point];
+  }
+
+  std::vector<double> weights;
+  weights.reserve(n); // Reserve memory to avoid reallocations
+
+  // Compute weights directly
+  for (const auto &point : points) {
+    weights.push_back(static_cast<double>(weight_map[point]) / n);
+  }
+
+  return weights;
 }
 
 std::vector<std::vector<int>>
@@ -78,7 +110,8 @@ calculateAverageRGB(const std::vector<int> &cluster_points,
 
 void assignPointsToClusters(const std::vector<std::vector<int>> &points,
                             const std::vector<std::vector<int>> &centroids,
-                            std::map<int, std::vector<int>> &clusters, int k) {
+                            std::unordered_map<int, std::vector<int>> &clusters,
+                            int k) {
   for (int coord = 0; coord < points.size(); ++coord) {
     std::vector<double> distance_to_center;
 
@@ -95,7 +128,7 @@ void assignPointsToClusters(const std::vector<std::vector<int>> &points,
 }
 
 std::vector<std::vector<int>>
-updateCentroids(const std::map<int, std::vector<int>> &clusters,
+updateCentroids(const std::unordered_map<int, std::vector<int>> &clusters,
                 const std::vector<std::vector<int>> &points,
                 const std::vector<std::vector<int>> &centroids) {
   std::vector<std::vector<int>> new_centroids;
@@ -114,15 +147,16 @@ updateCentroids(const std::map<int, std::vector<int>> &clusters,
   return new_centroids;
 }
 
-std::map<int, std::vector<int>> kMeans(int k,
-                                       std::vector<std::vector<int>> &points,
-                                       const unsigned &width,
-                                       const unsigned &height) {
+std::unordered_map<int, std::vector<int>>
+kMeans(int k, std::vector<std::vector<int>> &points, const unsigned &width,
+       const unsigned &height) {
   std::vector<std::vector<int>> centroids =
       selectClusterCenters(k, width, height, points);
-  std::map<int, std::vector<int>> clusters;
+  std::unordered_map<int, std::vector<int>> clusters;
   bool converged = false;
   double epsilon = 1e-4;
+  // hi
+  std::vector<double> weights = calculatePointWeights(points);
 
   while (!converged) {
 
