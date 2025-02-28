@@ -122,14 +122,9 @@ std::map<int, std::vector<int>> kMeans(int k,
       selectClusterCenters(k, width, height, points);
   std::map<int, std::vector<int>> clusters;
   bool converged = false;
-  int num_passes = 0;
   double epsilon = 1e-4;
 
   while (!converged) {
-    if (num_passes++ == 50) {
-      std::cout << "Max iterations reached. Exiting.\n";
-      return clusters;
-    }
 
     clusters.clear();
 
