@@ -5,21 +5,27 @@ SRC = ./src/color_reduction.cpp
 OBJ = ./bin/color_reduction.o
 OUT = ./bin/exec
 
-# Default target
-all: $(OUT)
+# Ensure the bin directory exists
+BIN_DIR = ./bin
+OBJ_DIR = ./bin
 
-# Linking the final executable
+# Default target
+all: clean $(OUT)
+
+# Remove the output file before building
 $(OUT): $(OBJ)
 	$(CC) $(CFLAGS) -o $(OUT) $(OBJ)
 
 # Compiling individual object files
-./bin/%.o: ./src/%.cpp
+$(OBJ): $(SRC)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up build artifacts
+.PHONY: clean
 clean:
-	rm -f bin/*.o $(OUT)
+	rm -f $(OBJ_DIR)/*.o $(OUT)
 
 # Run the compiled executable after cleaning
+.PHONY: run
 run: clean $(OUT)
 	./$(OUT)

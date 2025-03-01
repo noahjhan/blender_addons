@@ -1,6 +1,6 @@
 from PIL import Image, ImageFilter
 import numpy as np
-import disjoint_set
+import backdropper.src.python.disjoint_set as disjoint_set
 
 # proprocessing
 # edge detection
