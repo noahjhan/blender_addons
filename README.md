@@ -2,7 +2,11 @@
 
 ## Description
 
-This project provides a tool for performing K-Means clustering on an image, allowing you to process and quantize the colors of an image. The image is loaded as a vector, processed with the K-Means clustering algorithm to group similar colors, and then saved back as a new image.
+This is a collection of various addons for Blender - 3D Graphics Software. 
+
+Currently developing a tool to compress and convert image files to a normal mapping.
+
+This project provides a C++ file for performing K-Means clustering on an image, allowing you to process and quantize the colors of an image. The image is loaded as a vector, processed with the K-Means clustering algorithm to group similar colors, and then saved back as a new image.
 
 The tool uses the [stb_image](https://github.com/nothings/stb) and [stb_image_write](https://github.com/nothings/stb) libraries to handle image loading and saving. The K-Means clustering algorithm is applied to the RGB values of each pixel in the image.
 
@@ -13,6 +17,7 @@ The tool uses the [stb_image](https://github.com/nothings/stb) and [stb_image_wr
 - Update image colors based on cluster centroids.
 - Save the processed image as a PNG file.
 - Customizable number of clusters (`k`).
+- Will soon be integrated into Blender using bpy API and Cython
   
 ## Requirements
 
@@ -137,50 +142,7 @@ cluster 7 has 8037 points.
 cluster 8 has 20843 points.
 cluster 9 has 15058 points.
 cluster 10 has 10227 points.
-cluster 11 has 13248 points.
-cluster 12 has 26394 points.
-cluster 13 has 5214 points.
-cluster 14 has 16604 points.
-cluster 15 has 17363 points.
-cluster 16 has 36215 points.
-cluster 17 has 35371 points.
-cluster 18 has 23287 points.
-cluster 19 has 26831 points.
-cluster 20 has 7227 points.
-cluster 21 has 18372 points.
-cluster 22 has 16827 points.
-cluster 23 has 14388 points.
-cluster 24 has 7549 points.
-cluster 25 has 12171 points.
-cluster 26 has 7958 points.
-cluster 27 has 10585 points.
-cluster 28 has 6291 points.
-cluster 29 has 12470 points.
-cluster 30 has 14204 points.
-cluster 31 has 10203 points.
-cluster 32 has 23079 points.
-cluster 33 has 16995 points.
-cluster 34 has 15121 points.
-cluster 35 has 12166 points.
-cluster 36 has 10593 points.
-cluster 37 has 19815 points.
-cluster 38 has 5174 points.
-cluster 39 has 14923 points.
-cluster 40 has 13425 points.
-cluster 41 has 7550 points.
-cluster 42 has 28037 points.
-cluster 43 has 17125 points.
-cluster 44 has 14764 points.
-cluster 45 has 8911 points.
-cluster 46 has 8068 points.
-cluster 47 has 6885 points.
-cluster 48 has 15830 points.
-cluster 49 has 14738 points.
-cluster 50 has 11500 points.
-cluster 51 has 12385 points.
-cluster 52 has 10791 points.
-cluster 53 has 11405 points.
-cluster 54 has 16313 points.
+... etc
 updated centroids (first 5):
 centroid 0: 163, 67, 68
 centroid 1: 163, 67, 68
