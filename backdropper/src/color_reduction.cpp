@@ -2,9 +2,9 @@
 #include "../includes/stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "../includes/stb_image_write.h"
 #include "image_to_normal.cpp"
 #include "k_means.cpp"
-#include "../includes/stb_image_write.h"
 
 std::vector<std::vector<int>> load_png_to_vector(const char *filename,
                                                  int &width, int &height)
@@ -72,30 +72,20 @@ int main()
       "/users/noahhan/github_projects/blender_addons/backdropper/images/"
       "poke_output.png";
 
-  // const char *normal_output_filename =
-  // "/Users/noahhan/github_projects/blender_addons/backdropper/images/"
-  // "normal_output.png";
-
   int width = 0, height = 0;
   auto image_vector = load_png_to_vector(input_filename, width, height);
   if (image_vector.empty())
   {
-    std::cerr << "failed to lo  ad image vector." << std::endl;
+    std::cerr << "failed to load image vector." << std::endl;
     return 1;
   }
 
   std::cout << "loaded image with dimensions: " << width << " x " << height
             << std::endl;
 
-  int k = 55;
+  int k = 20;
   std::unordered_map<int, std::vector<int>> clusters =
       kMeans(k, image_vector, width, height);
-
-  for (auto &[center_id, cluster] : clusters)
-  {
-    std::cout << "cluster " << center_id << " has " << cluster.size()
-              << " points." << std::endl;
-  }
 
   for (auto &[center_id, cluster] : clusters)
   {
@@ -107,15 +97,6 @@ int main()
     }
   }
 
-  std::cout << "updated centroids (first 5):" << std::endl;
-  for (int i = 0; i < std::min(k, 5); ++i)
-  {
-    std::cout << "centroid " << i << ": " << image_vector[i][0] << ", "
-              << image_vector[i][1] << ", " << image_vector[i][2] << std::endl;
-  }
-
-  // std::vector<std::vector<int>> normal_image = imageToNormal(image_vector);
-
   if (save_vector_to_png(output_filename, image_vector, width, height))
   {
     std::cout << "image saved successfully to " << output_filename << std::endl;
@@ -126,15 +107,5 @@ int main()
     return 1;
   }
 
-  // if (save_vector_to_png(normal_output_filename, normal_image, width,
-  // height)) {
-  //   std::cout << "Image saved successfully to " << normal_output_filename <<
-  //   std::endl;
-  // } else {
-  //   std::cerr << "Failed to save output image." << std::endl;
-  //   return 1;
-  // }
-
-  // poopen();
   return 0;
 }
