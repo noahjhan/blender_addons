@@ -6,12 +6,10 @@
 
 #define DIMENSION (3) // RGB
 
-template <typename T>
-double euclideanDist(const std::vector<T> &left, const std::vector<T> &right)
+template <typename T> double euclideanDist(const std::vector<T> &left, const std::vector<T> &right)
 {
-  return std::sqrt(std::inner_product(left.begin(), left.end(), right.begin(),
-                                      0.0, std::plus<>(), [](T a, T b)
-                                      { return (a - b) * (a - b); }));
+  return std::sqrt(std::inner_product(left.begin(), left.end(), right.begin(), 0.0, std::plus<>(),
+                                      [](T a, T b) { return (a - b) * (a - b); }));
 }
 
 struct Hash
@@ -27,8 +25,7 @@ struct Hash
   }
 };
 
-std::vector<double>
-calculatePointWeights(const std::vector<std::vector<int>> &points)
+std::vector<double> calculatePointWeights(const std::vector<std::vector<int>> &points)
 {
   std::unordered_map<std::vector<int>, int, Hash> weight_map;
   size_t n = points.size();
@@ -51,10 +48,9 @@ calculatePointWeights(const std::vector<std::vector<int>> &points)
   return weights;
 }
 
-std::vector<std::vector<int>>
-selectClusterCenters(const int &k, const unsigned &width,
-                     const unsigned &height,
-                     const std::vector<std::vector<int>> &points)
+std::vector<std::vector<int>> selectClusterCenters(const int &k, const unsigned &width,
+                                                   const unsigned &height,
+                                                   const std::vector<std::vector<int>> &points)
 {
   std::srand(std::time(nullptr));
   std::vector<std::vector<int>> centers;
@@ -66,8 +62,7 @@ selectClusterCenters(const int &k, const unsigned &width,
 
   while (centers.size() < k)
   {
-    std::vector<double> distances(width * height,
-                                  std::numeric_limits<double>::max());
+    std::vector<double> distances(width * height, std::numeric_limits<double>::max());
 
     for (int i = 0; i < width * height; ++i)
     {
@@ -85,8 +80,7 @@ selectClusterCenters(const int &k, const unsigned &width,
 
     double max_dist = *std::max_element(distances.begin(), distances.end());
     int next_center =
-        std::distance(distances.begin(),
-                      std::find(distances.begin(), distances.end(), max_dist));
+        std::distance(distances.begin(), std::find(distances.begin(), distances.end(), max_dist));
     centers.push_back(points[next_center]);
     unique_pixels.insert(next_center);
   }
@@ -95,8 +89,7 @@ selectClusterCenters(const int &k, const unsigned &width,
 }
 
 std::vector<std::vector<int>>
-selectClusterCentersUniform(const int &k, const unsigned &width,
-                            const unsigned &height,
+selectClusterCentersUniform(const int &k, const unsigned &width, const unsigned &height,
                             const std::vector<std::vector<int>> &points)
 {
 
@@ -132,9 +125,8 @@ selectClusterCentersUniform(const int &k, const unsigned &width,
   return centers;
 }
 
-std::vector<int>
-calculateAverageRGB(const std::vector<int> &cluster_points,
-                    const std::vector<std::vector<int>> &points)
+std::vector<int> calculateAverageRGB(const std::vector<int> &cluster_points,
+                                     const std::vector<std::vector<int>> &points)
 {
   int sum_r = 0, sum_g = 0, sum_b = 0;
 
@@ -154,8 +146,7 @@ calculateAverageRGB(const std::vector<int> &cluster_points,
 
 void assignPointsToClusters(const std::vector<std::vector<int>> &points,
                             const std::vector<std::vector<int>> &centroids,
-                            std::unordered_map<int, std::vector<int>> &clusters,
-                            int k)
+                            std::unordered_map<int, std::vector<int>> &clusters, int k)
 {
   for (int coord = 0; coord < points.size(); ++coord)
   {
@@ -163,13 +154,12 @@ void assignPointsToClusters(const std::vector<std::vector<int>> &points,
 
     for (int centroid = 0; centroid < k; ++centroid)
     {
-      distance_to_center.push_back(
-          euclideanDist(points[coord], centroids[centroid]));
+      distance_to_center.push_back(euclideanDist(points[coord], centroids[centroid]));
     }
 
-    int cluster_ass = std::distance(
-        distance_to_center.begin(),
-        std::min_element(distance_to_center.begin(), distance_to_center.end()));
+    int cluster_ass =
+        std::distance(distance_to_center.begin(),
+                      std::min_element(distance_to_center.begin(), distance_to_center.end()));
     clusters[cluster_ass].push_back(coord);
   }
 }
@@ -197,12 +187,10 @@ updateCentroids(const std::unordered_map<int, std::vector<int>> &clusters,
   return new_centroids;
 }
 
-std::unordered_map<int, std::vector<int>>
-kMeans(int k, std::vector<std::vector<int>> &points, const unsigned &width,
-       const unsigned &height)
+std::unordered_map<int, std::vector<int>> kMeans(int k, std::vector<std::vector<int>> &points,
+                                                 const unsigned &width, const unsigned &height)
 {
-  std::vector<std::vector<int>> centroids =
-      selectClusterCentersUniform(k, width, height, points);
+  std::vector<std::vector<int>> centroids = selectClusterCentersUniform(k, width, height, points);
   std::unordered_map<int, std::vector<int>> clusters;
   bool converged = false;
   double epsilon = 1e-4;
@@ -215,8 +203,7 @@ kMeans(int k, std::vector<std::vector<int>> &points, const unsigned &width,
 
     assignPointsToClusters(points, centroids, clusters, k);
 
-    std::vector<std::vector<int>> new_centroids =
-        updateCentroids(clusters, points, centroids);
+    std::vector<std::vector<int>> new_centroids = updateCentroids(clusters, points, centroids);
 
     converged = true;
     for (int i = 0; i < k; ++i)

@@ -83,7 +83,7 @@ int main()
   std::cout << "loaded image with dimensions: " << width << " x " << height
             << std::endl;
 
-  int k = 20;
+  int k = 12;
   std::unordered_map<int, std::vector<int>> clusters =
       kMeans(k, image_vector, width, height);
 
